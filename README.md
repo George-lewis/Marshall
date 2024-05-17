@@ -82,7 +82,7 @@ class User:
     age: int = 0
 ```
 
-Then you HAVE mutually compatible types in both languages
+... and you have mutually compatible types in both languages
 
 So you can dump data with either, and load it with either
 

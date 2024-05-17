@@ -24,6 +24,15 @@ def deserialize(klass: type, data: dict) -> Self:
     if not dataclasses.is_dataclass(klass):
         return data
 
+    if skip := getattr(klass, "SKIP_DESERIALIZING", None):
+        for key in skip:
+            del data[key]
+
+    if skip_if := getattr(klass, "SKIP_DESERIALIZING_IF", None):
+        for key, condition in skip_if.items():
+            if condition(data[key]):
+                del data[key]
+
     # be careful with this dict
     # if we modify it, we modify the class!
     fields_ = fields(klass)
@@ -67,7 +76,6 @@ def deserialize(klass: type, data: dict) -> Self:
                         if variant == ENUM_VARIANT_UNIT:
                             if tag == v:
                                 d[k] = cls()
-                                print(d)
                                 break
                     elif variant == ENUM_VARIANT_TUPLE:
                         if tag in v:
@@ -82,7 +90,7 @@ def deserialize(klass: type, data: dict) -> Self:
         elif base == tuple:
             if not isinstance(v, tuple | list):
                 raise ValueError(f"cannot deserialize {v} as {ty}")
-            
+
             d[k] = tuple(deserialize(t, v) for t, v in zip(args, v))
         elif base == list:
             if not isinstance(v, list):
@@ -98,8 +106,6 @@ def deserialize(klass: type, data: dict) -> Self:
             }
         else:
             d[k] = v
-    
-    print(d)
 
     return klass(**d)
 
@@ -167,6 +173,10 @@ def asdict(obj, dict_factory=dict):
 
     return dataclasses.asdict(obj, dict_factory=factory)
 
+
+### Utility
+
+
 class TupleVariant:
     def __getitem__(self, idx):
         return getattr(self, f"_{idx}")
@@ -179,6 +189,10 @@ class TupleVariant:
 
     def __str__(self):
         return str(self.as_tuple())
-    
+
     def as_tuple(self):
         return tuple(self[i] for i in range(len(self)))
+
+
+def is_empty(value: Any) -> bool:
+    return len(value) == 0

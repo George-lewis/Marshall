@@ -21,5 +21,5 @@ struct User {
     #[serde(default, skip_serializing_if = "under_18")]
     age: u32,
 
-    birthday: (u32, u32, u32),
+    birthday: (u32, u32, Option<u32>),
 }

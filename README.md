@@ -30,7 +30,7 @@ struct User {
     #[serde(default, skip_serializing_if = "under_18")]
     age: u32,
 
-    birthday: (u32, u32, u32),
+    birthday: (u32, u32, Option<u32>),
 }
 
 ```
@@ -69,6 +69,9 @@ class FirstMiddleLast:
     middle: list[str]
     last: str
 
+# this is how we handle Rust-style enums
+# when we deserialize a field of this type
+# we get the correct variant
 Name = None_ | First | FirstLast | FirstMiddleLast
 
 @dataclass
@@ -78,13 +81,17 @@ class User:
     }
 
     name: Name
-    birthday: tuple[int, int, int]
+    birthday: tuple[int, int, int | None]
     age: int = 0
 ```
 
 ... and you have mutually compatible types in both languages
 
 So you can dump data with either, and load it with either
+
+The Python version is also careful to respect Serde's semantics with regards to serialize/deserialize skips, and field renames
+
+There's a lot of cases that this doesn't cover
 
 ### Why would I want this?
 

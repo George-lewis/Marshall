@@ -1,10 +1,12 @@
 # Generated code
 
-from lib.marshal import TupleVariant, dataclass, asdict
+from lib.marshal import *
+
 
 @dataclass
 class None_:
     ENUM_DATA = (ENUM_VARIANT_UNIT, "None")
+
 
 @dataclass
 class First(TupleVariant):
@@ -12,12 +14,14 @@ class First(TupleVariant):
 
     _0: str
 
+
 @dataclass
 class FirstLast(TupleVariant):
     ENUM_DATA = (ENUM_VARIANT_TUPLE, "FirstLast")
 
     _0: str
     _1: str
+
 
 @dataclass
 class FirstMiddleLast:
@@ -30,6 +34,7 @@ class FirstMiddleLast:
     middle: list[str]
     last: str
 
+
 Name = None_ | First | FirstLast | FirstMiddleLast
 
 
@@ -40,7 +45,5 @@ class User:
     }
 
     name: Name
-    birthday: tuple[int, int, int]
+    birthday: tuple[int, int, int | None]
     age: int = 0
-
-

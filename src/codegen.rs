@@ -301,7 +301,7 @@ impl<'a> Codegen<'a> {
     fn generate_enum_tuple(
         &mut self,
         name: &str,
-        attrs: &[SerdeAttribute<'a>],
+        _attrs: &[SerdeAttribute<'a>],
         types: &[Type<'a>],
     ) {
         output!(self, "@dataclass\n");
@@ -319,7 +319,7 @@ impl<'a> Codegen<'a> {
     fn generate_enum_struct(
         &mut self,
         name: &str,
-        attrs: &[SerdeAttribute<'a>],
+        _attrs: &[SerdeAttribute<'a>],
         struc: &Struct<'a>,
     ) {
         output!(self, "@dataclass\n");

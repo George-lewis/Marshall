@@ -1,6 +1,6 @@
 # Generated code
 
-from lib.marshal import *
+from lib.marshal import TupleVariant, dataclass, asdict
 
 @dataclass
 class None_:

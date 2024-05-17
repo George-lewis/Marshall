@@ -39,20 +39,20 @@ And get something like this...
 
 ```python
 # custom wrapper over dataclass
-from marshall import dataclass, asdict
+from marshall import TupleVariant, dataclass, asdict
 
 @dataclass
 class None_:
     ENUM_DATA = (ENUM_VARIANT_UNIT, "None")
 
 @dataclass
-class First:
+class First(TupleVariant):
     ENUM_DATA = (ENUM_VARIANT_TUPLE, "First")
 
     _0: str
 
 @dataclass
-class FirstLast:
+class FirstLast(TupleVariant):
     ENUM_DATA = (ENUM_VARIANT_TUPLE, "FirstLast")
 
     _0: str
@@ -69,7 +69,6 @@ class FirstMiddleLast:
     middle: list[str]
     last: str
 
-# type alias, this is how Rust enums (tagged unions) are mapped
 Name = None_ | First | FirstLast | FirstMiddleLast
 
 @dataclass
@@ -83,10 +82,8 @@ class User:
     age: int = 0
 ```
 
-Then you can create json with the Python types, and load it using the Rust ones
-
-TODO: Python deserialization
+Then you can mutually compatible types in both languages
 
 ### Why would I want this?
 
-You probably don't
+You probably don't, and I'm not going to provide any warranty for it :yum:

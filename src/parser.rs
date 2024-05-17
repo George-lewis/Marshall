@@ -1,5 +1,3 @@
-
-
 use crate::lexer::{LexicalToken, TokenType};
 
 #[derive(Debug)]

@@ -39,7 +39,7 @@ And get something like this...
 
 ```python
 # custom wrapper over dataclass
-from marshall import TupleVariant, dataclass, asdict
+from marshall import *
 
 @dataclass
 class None_:

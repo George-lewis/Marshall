@@ -305,34 +305,8 @@ impl<'a> Codegen<'a> {
         types: &[Type<'a>],
     ) {
         output!(self, "@dataclass\n");
-        output!(self, "class {}:\n", name);
-
-        let support = formatdoc!(
-            "
-                ENUM_DATA = (ENUM_VARIANT_TUPLE, \"{}\")
-
-                def __getitem__(self, idx):
-                    return getattr(self, f'_{{idx}}')
-
-                def __setitem__(self, idx, value):
-                    return setattr(self, f'_{{idx}}', value)
-
-                def as_tuple(self):
-                    return ({})
-
-                def __len__(self):
-                    return {}
-            ",
-            Self::safe_name(name),
-            types
-                .iter()
-                .enumerate()
-                .map(|(i, _)| format!("self._{}", i))
-                .join(", "),
-            types.len()
-        );
-
-        output!(self, "    {}\n\n", support.indent(1));
+        output!(self, "class {}(TupleVariant):\n", name);
+        output!(self, "    ENUM_DATA = (ENUM_VARIANT_TUPLE, \"{}\")\n\n", Self::safe_name(name));
 
         for (i, ty) in types.iter().enumerate() {
             let tyname = self.generate_type(ty);
@@ -421,7 +395,7 @@ impl<'a> Codegen<'a> {
 
     pub fn generate(mut self) -> String {
         output!(self, "# Generated code\n\n");
-        output!(self, "from lib.marshal import *\n\n");
+        output!(self, "from lib.marshal import TupleVariant, dataclass, asdict\n\n");
 
         let types = std::mem::take(&mut self.types);
 

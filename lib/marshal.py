@@ -33,6 +33,10 @@ def deserialize(klass: type, data: dict) -> Self:
             if condition(data[key]):
                 del data[key]
 
+    if rename := getattr(klass, "RENAME", None):
+        for old_key, new_key in rename.items():
+            data[new_key] = data.pop(old_key)
+
     # be careful with this dict
     # if we modify it, we modify the class!
     fields_ = fields(klass)

@@ -1,29 +1,24 @@
+mod codegen;
 mod lexer;
 mod parser;
-mod codegen;
 
 fn main() {
-    let filename = std::env::args().nth(1).expect("missing filename argument");
+    let mut args = std::env::args();
 
-    let input = std::fs::read_to_string(&filename).expect("cannot read file");
+    let input = args.nth(1).expect("missing filename argument");
 
-    let mut lexer = lexer::Lexer::new(&input);
+    let output = args.next();
+    let output = output.as_deref().unwrap_or("out.py");
 
+    let input = std::fs::read_to_string(&input).expect("cannot read file");
+
+    let lexer = lexer::Lexer::new(&input);
     let tokens = lexer.lex();
 
-    dbg!(&tokens);
+    let parser = parser::Parser::new(&tokens);
+    let types = parser.parse();
 
-    println!("{}", tokens.iter().map(|x| x.to_string() + " ").collect::<String>());
+    let code = codegen::Codegen::new(types).generate();
 
-    let mut parser = parser::Parser::new(&tokens);
-
-    let x = parser.parse();
-
-    dbg!(&x);
-
-    let code = codegen::Codegen::new(x).generate();
-
-    println!("{}", code);
-
-    std::fs::write("out.py", code).expect("cannot write file");
+    std::fs::write(output, code).expect("cannot write file");
 }

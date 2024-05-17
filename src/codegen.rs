@@ -399,10 +399,7 @@ impl<'a> Codegen<'a> {
 
     pub fn generate(mut self) -> String {
         output!(self, "# Generated code\n\n");
-        output!(
-            self,
-            "from lib.marshal import TupleVariant, dataclass, asdict\n\n"
-        );
+        output!(self, "from lib.marshal import *\n\n");
 
         let types = std::mem::take(&mut self.types);
 
